@@ -8,3 +8,4 @@ class Square:
         self.mine = False
         self.mask = True
         self.flag = False
+        self.mines = 0
