@@ -61,14 +61,6 @@ class Field:
                     if self.squares[y - 1][x].mine:
                         square.mines += 1
 
-    def generate_image(self):
-        """Generates the image of the field as string"""
-        image_str = [
-            [self._generate_square_image(square) for square in row]
-            for row in self.squares
-        ]
-        return image_str
-
     def reveal_square(self, x, y):
         """
         Reveal the specified square, if masked
@@ -87,13 +79,3 @@ class Field:
         """Toggles the mine marker on the specified square"""
         square = self.squares[y][x]
         square.toggle_mine_marker()
-
-    def _generate_square_image(self, square):
-        if square.mask:
-            return "M"
-        elif square.flag:
-            return "F"
-        elif square.mine:
-            return "*"
-        else:
-            return str(square.mines)

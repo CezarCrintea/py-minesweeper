@@ -143,31 +143,32 @@ def display_main_screen(stdscr, field):
 
 def display_field(stdscr, field, min_x, min_y, cursor_x, cursor_y):
     """Display the field of mines"""
-    field_image = field.generate_image()
-    for crt_y, row in enumerate(field_image):
-        for crt_x, char in enumerate(row):
-            y = min_y + crt_y
-            x = min_x + crt_x
+
+    for y, row in enumerate(field.squares):
+        for x, char in enumerate(row):
+            crt_y = min_y + y
+            crt_x = min_x + x
+            square = field.squares[y][x]
             color = MASKED
             displayed_char = char
-            if (x == cursor_x) and (y == cursor_y):
+            if (crt_x == cursor_x) and (crt_y == cursor_y):
                 # Draw the blinking character
-                stdscr.addstr(y, x, "*", curses.color_pair(CURSOR))
+                stdscr.addstr(crt_y, crt_x, "*", curses.color_pair(CURSOR))
             else:
-                if char == "M":
+                if square.mask:
                     displayed_char = " "
                     color = MASKED
-                if char == "F":
+                elif square.flag:
                     displayed_char = "*"
                     color = MARKED
-                elif char == "0":
+                elif square.mines == 0:
                     displayed_char = " "
                     color = EMPTY
-                elif char >= "1" and char <= "8":
-                    displayed_char = char
-                    color = MINES_1 + int(char) - 1
+                elif (square.mines >= 1) and (square.mines <= 8):
+                    displayed_char = str(square.mines)
+                    color = MINES_1 + square.mines - 1
 
-                stdscr.addstr(y, x, displayed_char, curses.color_pair(color))
+                stdscr.addstr(crt_y, crt_x, displayed_char, curses.color_pair(color))
         # Refresh the screen
     stdscr.refresh()
 
