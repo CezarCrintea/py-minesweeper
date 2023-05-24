@@ -9,3 +9,8 @@ class Square:
         self.mask = True
         self.flag = False
         self.mines = 0
+
+    def toggle_mine_marker(self):
+        """Toggles the mine marker on the specified square"""
+        self.flag = not self.flag
+        self.mask = not self.mask

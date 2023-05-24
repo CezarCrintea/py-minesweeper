@@ -83,9 +83,16 @@ class Field:
         if square.mine:
             self.game_over = True
 
+    def toggle_mine_marker(self, x, y):
+        """Toggles the mine marker on the specified square"""
+        square = self.squares[y][x]
+        square.toggle_mine_marker()
+
     def _generate_square_image(self, square):
         if square.mask:
             return "M"
+        elif square.flag:
+            return "F"
         elif square.mine:
             return "*"
         else:

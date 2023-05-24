@@ -9,8 +9,9 @@ MESSAGE = 1
 TITLE = 2
 CURSOR = 3
 EMPTY = 4
-MASKED = 5
-MINES_1 = 6
+MASKED = EMPTY + 1
+MARKED = MASKED + 1
+MINES_1 = MARKED + 1
 MINES_2 = MINES_1 + 1
 MINES_3 = MINES_2 + 1
 MINES_4 = MINES_3 + 1
@@ -46,6 +47,7 @@ def setup_curses(stdscr):
     curses.init_pair(TITLE, curses.COLOR_WHITE, curses.COLOR_RED)
     curses.init_pair(CURSOR, curses.COLOR_WHITE, curses.COLOR_RED)
     curses.init_pair(MASKED, curses.COLOR_WHITE, curses.COLOR_WHITE)
+    curses.init_pair(MARKED, curses.COLOR_RED, curses.COLOR_WHITE)
     curses.init_pair(EMPTY, curses.COLOR_WHITE, curses.COLOR_BLACK)
     curses.init_pair(MINES_1, curses.COLOR_GREEN, curses.COLOR_BLACK)
     curses.init_pair(MINES_2, curses.COLOR_GREEN, curses.COLOR_BLACK)
@@ -126,7 +128,11 @@ def display_main_screen(stdscr, field):
             x = cursor_x - min_x
             y = cursor_y - min_y
             field.reveal_square(x, y)
-        elif key == ord("q"):
+        elif (key == ord("m")) or (key == ord("M")):
+            x = cursor_x - min_x
+            y = cursor_y - min_y
+            field.toggle_mine_marker(x, y)
+        elif (key == ord("q")) or (key == ord("Q")):
             break
 
         display_field(stdscr, field, min_x, min_y, cursor_x, cursor_y)
@@ -151,6 +157,9 @@ def display_field(stdscr, field, min_x, min_y, cursor_x, cursor_y):
                 if char == "M":
                     displayed_char = " "
                     color = MASKED
+                if char == "F":
+                    displayed_char = "*"
+                    color = MARKED
                 elif char == "0":
                     displayed_char = " "
                     color = EMPTY
