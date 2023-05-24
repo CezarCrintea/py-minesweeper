@@ -6,9 +6,9 @@ import sys
 from field import Field
 
 MESSAGE = 1
-TITLE = 2
-CURSOR = 3
-EMPTY = 4
+TITLE = MESSAGE + 1
+CURSOR = TITLE + 1
+EMPTY = CURSOR + 1
 MASKED = EMPTY + 1
 MARKED = MASKED + 1
 MINES_1 = MARKED + 1
