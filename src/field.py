@@ -63,7 +63,7 @@ class Field:
 
     def reveal_square(self, x, y):
         """
-        Reveal the specified square, if masked
+        Reveal the specified square, if masked.
         If there is a mine on that square sets game over.
         """
         square = self.squares[y][x]
@@ -74,6 +74,34 @@ class Field:
 
         if square.mine:
             self.game_over = True
+
+        if square.mines > 0:
+            return
+
+        if x > 0 and y > 0:
+            if not self.squares[y - 1][x - 1].mine:
+                self.reveal_square(x - 1, y - 1)
+        if x > 0:
+            if not self.squares[y][x - 1].mine:
+                self.reveal_square(x - 1, y)
+        if x > 0 and y < self.length - 1:
+            if not self.squares[y + 1][x - 1].mine:
+                self.reveal_square(x - 1, y + 1)
+        if y < self.length - 1:
+            if not self.squares[y + 1][x].mine:
+                self.reveal_square(x, y + 1)
+        if x < self.width - 1 and y < self.length - 1:
+            if not self.squares[y + 1][x + 1].mine:
+                self.reveal_square(x + 1, y + 1)
+        if x < self.width - 1:
+            if not self.squares[y][x + 1].mine:
+                self.reveal_square(x + 1, y)
+        if x < self.width - 1 and y > 0:
+            if self.squares[y - 1][x + 1].mine:
+                self.reveal_square(x + 1, y - 1)
+        if y > 0:
+            if self.squares[y - 1][x].mine:
+                self.reveal_square(x, y - 1)
 
     def toggle_mine_marker(self, x, y):
         """Toggles the mine marker on the specified square"""
