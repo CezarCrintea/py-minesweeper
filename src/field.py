@@ -7,7 +7,7 @@ class Field:
     """Contains the information for the whole minefield.
     The minefield has a rectangular shape and is composed of squares."""
 
-    def __init__(self, length, width):
+    def __init__(self, length: int, width: int):
         self.length = length
         self.width = width
         self.game_over = False
@@ -61,10 +61,11 @@ class Field:
                     if self.squares[y - 1][x].mine:
                         square.mines += 1
 
-    def reveal_square(self, x, y):
+    def reveal_square(self, x: int, y: int):
         """
         Reveal the specified square, if masked.
         If there is a mine on that square sets game over.
+        If the square is empty, reveals recursively the adjacent squares without mines.
         """
         square = self.squares[y][x]
         if not square.mask:
@@ -103,7 +104,7 @@ class Field:
             if self.squares[y - 1][x].mine:
                 self.reveal_square(x, y - 1)
 
-    def toggle_mine_marker(self, x, y):
+    def toggle_mine_marker(self, x: int, y: int):
         """Toggles the mine marker on the specified square"""
         square = self.squares[y][x]
         square.toggle_mine_marker()

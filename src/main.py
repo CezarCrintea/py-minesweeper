@@ -82,7 +82,7 @@ def display_welcome_screen(stdscr):
     stdscr.getch()
 
 
-def display_main_screen(stdscr, field):
+def display_main_screen(stdscr, field: Field):
     """Displayes the main screen"""
 
     # Set up the screen
@@ -141,7 +141,9 @@ def display_main_screen(stdscr, field):
         time.sleep(0.2)
 
 
-def display_field(stdscr, field, min_x, min_y, cursor_x, cursor_y):
+def display_field(
+    stdscr, field: Field, min_x: int, min_y: int, cursor_x: int, cursor_y: int
+):
     """Display the field of mines"""
 
     for y, row in enumerate(field.squares):
