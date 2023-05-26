@@ -7,16 +7,17 @@ class Field:
     """Contains the information for the whole minefield.
     The minefield has a rectangular shape and is composed of squares."""
 
-    def __init__(self, length: int, width: int):
-        self.length = length
+    def __init__(self, width: int, height: int, mines_perc: int):
         self.width = width
+        self.height = height
+        self.mines_perc = mines_perc
         self.game_over = False
         self.setup_minefield()
 
     def setup_minefield(self):
         """Setup the minefield"""
         self.squares = [
-            [Square() for y in range(self.width)] for x in range(self.length)
+            [Square() for x in range(self.width)] for y in range(self.height)
         ]
         self.plant_mines()
         self.setup_mine_count()
@@ -42,13 +43,13 @@ class Field:
                 if x > 0:
                     if self.squares[y][x - 1].mine:
                         square.mines += 1
-                if x > 0 and y < self.length - 1:
+                if x > 0 and y < self.height - 1:
                     if self.squares[y + 1][x - 1].mine:
                         square.mines += 1
-                if y < self.length - 1:
+                if y < self.height - 1:
                     if self.squares[y + 1][x].mine:
                         square.mines += 1
-                if x < self.width - 1 and y < self.length - 1:
+                if x < self.width - 1 and y < self.height - 1:
                     if self.squares[y + 1][x + 1].mine:
                         square.mines += 1
                 if x < self.width - 1:
@@ -85,13 +86,13 @@ class Field:
         if x > 0:
             if not self.squares[y][x - 1].mine:
                 self.reveal_square(x - 1, y)
-        if x > 0 and y < self.length - 1:
+        if x > 0 and y < self.height - 1:
             if not self.squares[y + 1][x - 1].mine:
                 self.reveal_square(x - 1, y + 1)
-        if y < self.length - 1:
+        if y < self.height - 1:
             if not self.squares[y + 1][x].mine:
                 self.reveal_square(x, y + 1)
-        if x < self.width - 1 and y < self.length - 1:
+        if x < self.width - 1 and y < self.height - 1:
             if not self.squares[y + 1][x + 1].mine:
                 self.reveal_square(x + 1, y + 1)
         if x < self.width - 1:

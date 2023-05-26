@@ -23,11 +23,13 @@ MINES_8 = MINES_7 + 1
 
 def main(stdscr, args):
     """Main loop of the game"""
-
+    sys.setrecursionlimit(2000)
     setup_curses(stdscr)
     display_welcome_screen(stdscr)
 
-    field = Field(10, 10)
+    field_width, field_height, mines_perc = choose_game_type(stdscr)
+
+    field = Field(field_width, field_height, mines_perc)
 
     display_main_screen(stdscr, field)
 
@@ -82,6 +84,58 @@ def display_welcome_screen(stdscr):
     stdscr.getch()
 
 
+def choose_game_type(stdscr) -> tuple[int, int, int]:
+    """Displays a screen to choose a minefield size and squares with mines percentage"""
+
+    # Get the screen dimensions
+    screen_height, screen_width = stdscr.getmaxyx()
+
+    options = [
+        {"text": "Easy", "width": 10, "height": 10, "mines": 7},
+        {"text": "Medium", "width": 30, "height": 15, "mines": 14},
+        {"text": "Hard", "width": 60, "height": 20, "mines": 21},
+    ]
+
+    stdscr.clear()
+
+    # Coordinates start from top left, in the format of y, x.
+
+    textblock_height = 1 + 4 + 2 * len(options)
+
+    prompt_text = "Choose game type"
+    x_pos = int((screen_width - len(prompt_text)) / 2)
+    y_pos = int((screen_height - textblock_height) / 2)
+    stdscr.addstr(y_pos, x_pos, prompt_text, curses.color_pair(TITLE))
+
+    for i, option in enumerate(options):
+        opt_text = option["text"]
+        opt_w = option["width"]
+        opt_h = option["height"]
+        opt_mines = option["mines"]
+        option_text = f"{i+1}. {opt_text} ({opt_w} x {opt_h} {opt_mines}% mines)"
+        stdscr.addstr(y_pos + 4 + 2 * i, x_pos, option_text, curses.color_pair(MESSAGE))
+
+    # Actually draws the text above to the positions specified.
+    stdscr.refresh()
+
+    key = stdscr.getch()
+
+    if key == ord("1"):
+        selected_option = 0
+    elif key == ord("2"):
+        selected_option = 1
+    elif key == ord("3"):
+        selected_option = 2
+    else:
+        selected_option = 0
+
+    return (
+        options[selected_option]["width"],
+        options[selected_option]["height"],
+        options[selected_option]["mines"],
+    )
+
+
 def display_main_screen(stdscr, field: Field):
     """Displayes the main screen"""
 
@@ -91,17 +145,17 @@ def display_main_screen(stdscr, field: Field):
     stdscr.timeout(100)  # Refresh every 100 milliseconds
 
     # Get the screen dimensions
-    sh, sw = stdscr.getmaxyx()
+    screen_height, screen_width = stdscr.getmaxyx()
 
     # Initial position of the blinking character
-    cursor_x = sw // 2
-    cursor_y = sh // 2
+    cursor_x = screen_width // 2
+    cursor_y = screen_height // 2
 
-    height = 10
-    width = 10
+    height = field.height
+    width = field.width
 
-    min_x = int((sw - width) / 2)
-    min_y = int((sh - height) / 2)
+    min_x = int((screen_width - width) / 2)
+    min_y = int((screen_height - height) / 2)
     max_x = min_x + width
     max_y = min_y + height
 
