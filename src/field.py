@@ -1,6 +1,7 @@
 """Contains the Field class"""
 
 from square import Square
+import random
 
 
 class Field:
@@ -28,6 +29,15 @@ class Field:
         self.squares[5][3].mine = True
         self.squares[9][0].mine = True
         self.squares[7][7].mine = True
+
+        squares_count = self.height * self.width
+        mines_count = squares_count * self.mines_perc // 100
+        coordinates = random.sample(range(squares_count), mines_count)
+
+        for coord in coordinates:
+            row = coord // self.width
+            col = coord % self.width
+            self.squares[row][col].mine = True
 
     def setup_mine_count(self):
         """Setup the mine count for every square"""
