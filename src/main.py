@@ -19,6 +19,7 @@ MINES_5 = MINES_4 + 1
 MINES_6 = MINES_5 + 1
 MINES_7 = MINES_6 + 1
 MINES_8 = MINES_7 + 1
+MINE = MINES_8 + 1
 
 
 def main(stdscr, args):
@@ -59,6 +60,7 @@ def setup_curses(stdscr):
     curses.init_pair(MINES_6, curses.COLOR_RED, curses.COLOR_BLACK)
     curses.init_pair(MINES_7, curses.COLOR_RED, curses.COLOR_BLACK)
     curses.init_pair(MINES_8, curses.COLOR_RED, curses.COLOR_BLACK)
+    curses.init_pair(MINE, curses.COLOR_RED, curses.COLOR_BLACK)
 
 
 def display_welcome_screen(stdscr):
@@ -201,12 +203,11 @@ def display_field(
     """Display the field of mines"""
 
     for y, row in enumerate(field.squares):
-        for x, char in enumerate(row):
+        for x, square in enumerate(row):
             crt_y = min_y + y
             crt_x = min_x + x
-            square = field.squares[y][x]
             color = MASKED
-            displayed_char = char
+            displayed_char = " "
             if (crt_x == cursor_x) and (crt_y == cursor_y):
                 # Draw the blinking character
                 stdscr.addstr(crt_y, crt_x, "*", curses.color_pair(CURSOR))
@@ -217,6 +218,9 @@ def display_field(
                 elif square.flag:
                     displayed_char = "*"
                     color = MARKED
+                elif square.mine:
+                    displayed_char = "*"
+                    color = MINE
                 elif square.mines == 0:
                     displayed_char = " "
                     color = EMPTY
