@@ -1,7 +1,7 @@
 """Contains the Field class"""
 
-from square import Square
 import random
+from square import Square
 
 
 class Field:
@@ -12,7 +12,7 @@ class Field:
         self.width = width
         self.height = height
         self.mines_perc = mines_perc
-        self.game_over = False
+        self.mine_exploded = False
         self.setup_minefield()
 
     def setup_minefield(self):
@@ -85,7 +85,7 @@ class Field:
         square.mask = False
 
         if square.mine:
-            self.game_over = True
+            self.mine_exploded = True
 
         if square.mines > 0:
             return

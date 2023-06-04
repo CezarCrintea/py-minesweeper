@@ -1,0 +1,30 @@
+/* The top level dialog (a Container) */
+ChooseGameType Container{
+    height: auto;
+    margin: 4 8;
+    background: $panel;
+    color: $text;
+    border: tall $background;
+    padding: 1 2;
+}
+
+/* Matches the button container */
+ChooseGameType Vertical {
+    width: 100%;
+    height: auto;
+}
+
+/* Matches the prompt text */
+ChooseGameType Label {
+    text-style: bold;
+    height: auto;
+    content-align: center middle;
+}
+
+/* The button class */
+ChooseGameType Button {
+    width: 1fr;
+    margin-top: 1;
+}
+
+
