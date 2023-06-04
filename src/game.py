@@ -53,8 +53,24 @@ class GameHeader(Widget):
             yield Label(id="squares")
             yield Label(id="mines")
 
+    def watch_cleared_squares(self, new_value: int):
+        """Watch the cleared_squares reactive and update the squares label when it changes.
+
+        Args:
+            moves (int): The number of cleared squares.
+        """
+        self.update_squares_label()
+
+    def watch_total_squares(self, new_value: int):
+        """Watch the total squares reactive and update the squares label when it changes.
+
+        Args:
+            filled (int): The number of cells that are currently on.
+        """
+        self.update_squares_label()
+
     def watch_marked_mines(self, new_value: int):
-        """Watch the marked_mines reactive and update when it changes.
+        """Watch the marked_mines reactive and update the label when it changes.
 
         Args:
             moves (int): The number of marked mines.
@@ -62,7 +78,7 @@ class GameHeader(Widget):
         self.update_mines_label()
 
     def watch_total_mines(self, new_value: int):
-        """Watch the on-count reactive and update when it changes.
+        """Watch the total mines reactive and update the label when it changes.
 
         Args:
             filled (int): The number of cells that are currently on.
@@ -91,13 +107,20 @@ class GameMessage(Label):
         Args:
             won (bool): The player has won or not.
         """
+        if won:
+            self.update("You won !!!")
+            self.add_class("won")
+        else:
+            self.update("You lost!!!")
+            self.add_class("lost")
 
-        self.update("You won !!!" if won else "You lost!!!")
         self.add_class("visible")
 
     def hide(self) -> None:
         """Hide the winner message."""
         self.remove_class("visible")
+        self.remove_class("won")
+        self.remove_class("lost")
 
 
 class MinesGrid(Widget, can_focus=True):
@@ -121,6 +144,9 @@ class MinesGrid(Widget, can_focus=True):
 
     class MineExploded(Message):
         """A mine exploded"""
+
+    class FieldCleared(Message):
+        """The field was cleared"""
 
     BINDINGS = [
         Binding("up", "move_up", "Move Up", False),
@@ -215,27 +241,13 @@ class MinesGrid(Widget, can_focus=True):
         if self.field.mine_exploded:
             self.post_message(self.MineExploded())
         else:
-            cleared_squares = 0
-
-            for row in self.field.squares:
-                for square in row:
-                    if not square.mask:
-                        cleared_squares += 1
-
-            self.post_message(self.SquareCleared(cleared_squares, self.total_squares))
+            self.count_cleared_squares_and_send_notification()
 
     def action_mark(self) -> None:
         """Toggles the mine marker for the square under the cursor"""
         self.field.toggle_mine_marker(self.cursor_x, self.cursor_y)
-
-        marked_mines = 0
-
-        for row in self.field.squares:
-            for square in row:
-                if square.flag:
-                    marked_mines += 1
-
-        self.post_message(self.SquareCleared(marked_mines, self.total_mines))
+        self.count_marked_mines_and_send_notification()
+        self.count_cleared_squares_and_send_notification()
 
     def watch_field(self, new_value: Field):
         """Watch the field reactive and update total squares and mines when it changes.
@@ -253,6 +265,34 @@ class MinesGrid(Widget, can_focus=True):
                     total_mines += 1
 
         self.total_mines = total_mines
+
+        self.post_message(self.SquareCleared(0, self.total_squares))
+        self.post_message(self.MineMarked(0, self.total_mines))
+
+    def count_cleared_squares_and_send_notification(self):
+        """Counts the cleared squares and send notification message"""
+        cleared_squares = 0
+
+        for row in self.field.squares:
+            for square in row:
+                if not square.mask:
+                    cleared_squares += 1
+
+        self.post_message(self.SquareCleared(cleared_squares, self.total_squares))
+
+        if cleared_squares == self.total_squares:
+            self.post_message(self.FieldCleared())
+
+    def count_marked_mines_and_send_notification(self):
+        """Counts the marked mines and send nitification message"""
+        marked_mines = 0
+
+        for row in self.field.squares:
+            for square in row:
+                if square.flag:
+                    marked_mines += 1
+
+        self.post_message(self.MineMarked(marked_mines, self.total_mines))
 
 
 class Game(Screen[None]):
@@ -293,7 +333,6 @@ class Game(Screen[None]):
             )
 
             self.query_one(GameHeader).marked_mines = 0
-            self.query_one(GameMessage).hide()
 
             mines_grid = self.query_one(MinesGrid)
             mines_grid.field = self.field
@@ -303,7 +342,31 @@ class Game(Screen[None]):
             self.game_playable(True)
 
         self.app.push_screen(ChooseGameType(), type_choosen)
+        self.query_one(GameMessage).hide()
         self.game_playable(False)
 
+    def on_mines_grid_square_cleared(self, message: MinesGrid.SquareCleared) -> None:
+        """Handler for the SquareCleared event generated by the MinesGrid"""
+        game_header = self.query_one(GameHeader)
+        game_header.cleared_squares = message.cleared
+        game_header.total_squares = message.total
+
+    def on_mines_grid_mine_marked(self, message: MinesGrid.MineMarked) -> None:
+        """Handler for the MineMarked event generated by the MinesGrid"""
+        game_header = self.query_one(GameHeader)
+        game_header.marked_mines = message.marked
+        game_header.total_mines = message.total
+
+    def on_mines_grid_mine_exploded(self, message: MinesGrid.MineExploded) -> None:
+        """Handler for the MineExploded event generated by the MinesGrid"""
+        self.game_playable(False)
+        self.query_one(GameMessage).show(False)
+
+    def on_mines_grid_field_cleared(self, message: MinesGrid.FieldCleared) -> None:
+        """Handler for the FieldCleared event generated by the MinesGrid"""
+        self.game_playable(False)
+        self.query_one(GameMessage).show(True)
+
     def on_mount(self) -> None:
+        """Handler for the Mount event"""
         self.action_new_game()
