@@ -22,14 +22,17 @@ GameHeader {
 }
 
 GameHeader #app-title {
+    layer: gameplay;
     width: 40%;
 }
 
 GameHeader #squares {
+    layer: gameplay;
     width: 30%;
 }
 
 GameHeader #mines {
+    layer: gameplay;
     width: 30%;
 }
 

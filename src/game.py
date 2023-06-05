@@ -34,6 +34,8 @@ MINE = MINES_8 + 1
 class GameHeader(Widget):
     """Header for game. Diplays marked mines and not-marked mines"""
 
+    active = reactive(False)
+    """bool: True when playing, False otherwise."""
     cleared_squares = reactive(0)
     """int: Keep track of how many squares the player has cleared."""
     total_squares = reactive(0)
@@ -53,6 +55,12 @@ class GameHeader(Widget):
             yield Label(self.app.title, id="app-title")
             yield Label(id="squares")
             yield Label(id="mines")
+
+    def watch_active(self, new_value: bool):
+        """Watch the active reactive and hide/show the labels when it changes."""
+
+        self.update_mines_label()
+        self.update_squares_label()
 
     def watch_cleared_squares(self, new_value: int):
         """Watch the cleared_squares reactive and update the squares label when it changes.
@@ -88,15 +96,21 @@ class GameHeader(Widget):
 
     def update_mines_label(self):
         """Update mines label"""
-        self.query_one("#mines", Label).update(
+        text = (
             f"Mines marked {self.marked_mines} of {self.total_mines}"
+            if self.active
+            else ""
         )
+        self.query_one("#mines", Label).update(text)
 
     def update_squares_label(self):
         """Updates squares label"""
-        self.query_one("#squares", Label).update(
+        text = (
             f"Squares cleared {self.cleared_squares} of {self.total_squares}"
+            if self.active
+            else ""
         )
+        self.query_one("#squares", Label).update(text)
 
 
 class GameMessage(Label):
@@ -337,6 +351,7 @@ class Game(Screen[None]):
         Args:
             playable (bool): Should the game currently be playable?
         """
+        self.query_one(GameHeader).active = playable
         self.query_one(MinesGrid).active = playable
 
     def action_new_game(self) -> None:
