@@ -109,10 +109,10 @@ class Field:
             if not self.squares[y][x + 1].mine:
                 self.reveal_square(x + 1, y)
         if x < self.width - 1 and y > 0:
-            if self.squares[y - 1][x + 1].mine:
+            if not self.squares[y - 1][x + 1].mine:
                 self.reveal_square(x + 1, y - 1)
         if y > 0:
-            if self.squares[y - 1][x].mine:
+            if not self.squares[y - 1][x].mine:
                 self.reveal_square(x, y - 1)
 
     def toggle_mine_marker(self, x: int, y: int):
