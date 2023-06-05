@@ -6,6 +6,7 @@ from rich.style import Style
 from textual.app import ComposeResult, RenderResult
 from textual.binding import Binding
 from textual.containers import Horizontal
+from textual.events import Click, MouseMove
 from textual.message import Message
 from textual.reactive import reactive
 from textual.screen import Screen
@@ -248,6 +249,23 @@ class MinesGrid(Widget, can_focus=True):
         self.field.toggle_mine_marker(self.cursor_x, self.cursor_y)
         self.count_marked_mines_and_send_notification()
         self.count_cleared_squares_and_send_notification()
+
+    def on_click(self, event: Click):
+        """Clears or marks the square depending on the button clicked"""
+        self.cursor_x = event.x
+        self.cursor_y = event.y
+
+        # Left-click to clear
+        if event.button == 1:
+            self.action_clear()
+        # Right click to mark
+        elif event.button == 3:
+            self.action_mark()
+
+    def on_mouse_move(self, event: MouseMove):
+        """Moves the cursor following the movements of the mouse"""
+        self.cursor_x = event.x
+        self.cursor_y = event.y
 
     def watch_field(self, new_value: Field):
         """Watch the field reactive and update total squares and mines when it changes.
