@@ -9,7 +9,14 @@ class MinesweeperApp(App):
     """The application class"""
 
     BINDINGS = [("ctrl+d", "toggle_dark", "Toggle Dark Mode")]
-    CSS_PATH = ["game.css", "choose_game_type.css"]
+    CSS_PATH = [
+        "game.css",
+        "choose_game_type.css",
+        "game_header.css",
+        "game_message.css",
+        "help.css",
+        "mines_grid.css",
+    ]
     SCREENS = {"help": Help}
 
     TITLE = "MineSweeper"

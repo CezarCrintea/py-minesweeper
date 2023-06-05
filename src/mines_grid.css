@@ -1,0 +1,6 @@
+MinesGrid {
+    height: auto;
+    width: auto;
+    border: none;
+    layer: gameplay;
+}

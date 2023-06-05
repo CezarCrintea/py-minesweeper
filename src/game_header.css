@@ -1,0 +1,22 @@
+GameHeader {
+    background: $primary-background;
+    color: $text;
+    height: 1;
+    dock: top;
+    layer: gameplay;
+}
+
+GameHeader #app-title {
+    layer: gameplay;
+    width: 40%;
+}
+
+GameHeader #squares {
+    layer: gameplay;
+    width: 30%;
+}
+
+GameHeader #mines {
+    layer: gameplay;
+    width: 30%;
+}

@@ -1,0 +1,19 @@
+GameMessage {
+    width: 50%;
+    height: 25%;
+    layer: messages;
+    visibility: hidden;
+    content-align: center middle;
+    text-align: center;
+    color: $text;
+    border: round;
+    padding: 2;
+}
+
+GameMessage .won {
+    background: $success;
+}
+
+GameMessage .lost {
+    background: $error;
+}

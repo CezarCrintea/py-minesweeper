@@ -6,66 +6,12 @@ Game {
     layers: gameplay messages;
 }
 
-MinesGrid {
-    height: auto;
-    width: auto;
-    border: none;
-    layer: gameplay;
-}
-
-GameHeader {
-    background: $primary-background;
-    color: $text;
-    height: 1;
-    dock: top;
-    layer: gameplay;
-}
-
-GameHeader #app-title {
-    layer: gameplay;
-    width: 40%;
-}
-
-GameHeader #squares {
-    layer: gameplay;
-    width: 30%;
-}
-
-GameHeader #mines {
-    layer: gameplay;
-    width: 30%;
+.visible {
+    visibility: visible;
 }
 
 Footer {
     height: 1;
     dock: bottom;
     layer: gameplay;
-}
-
-GameMessage {
-    width: 50%;
-    height: 25%;
-    layer: messages;
-    visibility: hidden;
-    content-align: center middle;
-    text-align: center;
-    color: $text;
-    border: round;
-    padding: 2;
-}
-
-.visible {
-    visibility: visible;
-}
-
-GameMessage .won {
-    background: $success;
-}
-
-GameMessage .lost {
-    background: $error;
-}
-
-Help {
-    border: round $primary-lighten-3;
 }

@@ -5,14 +5,14 @@
     "source.organizeImports": true // organise python imports according to PEP8 on save
   },
   /*--- PYTHON ----*/
-  // linting (basic code checking)
-  "python.linting.pylintEnabled": true,
-  "python.linting.enabled": true,
-  "python.linting.lintOnSave": true,
-  "pylint.interpreter": ["./.venv/Scripts/python.exe"],
-  "python.formatting.provider": "none", // formatting
   "python.analysis.typeCheckingMode": "basic",
+  "python.analysis.diagnosticMode": "workspace",
+  "pylint.interpreter": ["./.venv/Scripts/python.exe"],
+  "python.formatting.provider": "black", // formatting
   "[python]": {
     "editor.defaultFormatter": "ms-python.black-formatter"
-  } // type checking
+  },
+  "python.linting.enabled": true,
+  "python.linting.lintOnSave": true,
+  "python.linting.pylintEnabled": true // type checking
 }
